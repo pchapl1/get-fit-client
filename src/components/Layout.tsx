@@ -17,11 +17,9 @@ import Sidebar from './Sidebar';
 
 const drawerWidth = 240;
 
-interface LayoutProps {
-  children: ReactNode;
-}
 
-export default function Layout({ children}: LayoutProps) {
+
+export default function Layout() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -30,7 +28,7 @@ export default function Layout({ children}: LayoutProps) {
     setMobileOpen(!mobileOpen);
   };
 
-  const drawer = <Sidebar />;
+  const drawer = <Sidebar data-testid = "sidebar" />;
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -40,6 +38,7 @@ export default function Layout({ children}: LayoutProps) {
         <Toolbar>
           {isMobile && (
             <IconButton
+              data-testid ="toggle-drawer"
               color="inherit"
               edge="start"
               onClick={handleDrawerToggle}
