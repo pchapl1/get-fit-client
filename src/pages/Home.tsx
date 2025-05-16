@@ -44,6 +44,7 @@ export default function Home({ recentWorkouts, onCreateNewWorkout }: HomeProps) 
   }
 
   return (
+    
     <Box
       sx={ { 
         p: 2,
@@ -53,6 +54,9 @@ export default function Home({ recentWorkouts, onCreateNewWorkout }: HomeProps) 
         color: theme.palette.text.primary
       }}
       >
+      <Typography variant="h5" gutterBottom sx={ { textAlign: 'center', mb: 2}}>
+        Welcome to GetFit!
+      </Typography>
       <Typography variant={isMobile? 'h5': "h4"} gutterBottom>
         Recent Workouts
       </Typography>
@@ -78,7 +82,8 @@ export default function Home({ recentWorkouts, onCreateNewWorkout }: HomeProps) 
       <Fab
         color="primary"
         aria-label= "Create new Workout"
-        onClick={()=> setModalOpen(true)}
+        onClick={()=> {setModalOpen(true); onCreateNewWorkout()}}
+        disableRipple
         sx={ { 
           position: 'fixed',
           bottom: theme.spacing(3),

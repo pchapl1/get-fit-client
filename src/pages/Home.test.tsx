@@ -12,7 +12,8 @@
 // });
 
 
-import { render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Home from './Home';
 
 const dummyWorkouts = [
@@ -22,15 +23,20 @@ const dummyWorkouts = [
 const mockCreate = jest.fn();
 
 describe('Home Page', () => {
+  beforeEach (()=> {
+    mockCreate.mockClear();
+  });
   it('renders recent workouts list', () => {
     render(<Home recentWorkouts={dummyWorkouts} onCreateNewWorkout={mockCreate} />);
     expect(screen.getByText(/leg day/i)).toBeInTheDocument();
   });
 
-  it('calls create handler on FAB click', () => {
+  it('calls create handler on FAB click', async () => {
     render(<Home recentWorkouts={[]} onCreateNewWorkout={mockCreate} />);
     const fab = screen.getByLabelText(/create new workout/i);
-    fab.click();
-    expect(mockCreate).toHaveBeenCalled();
+    await userEvent.click(fab);
+    await waitFor(()=> {
+      expect(mockCreate).toHaveBeenCalled();
+    })
   });
 });
