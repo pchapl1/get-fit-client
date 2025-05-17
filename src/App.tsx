@@ -19,7 +19,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home recentWorkouts={dummyWorkouts} onCreateNewWorkout={handleCreateWorkout}/>} />
+          <Route index element={<Home  />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

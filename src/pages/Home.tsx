@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { Box, List, ListItem, ListItemText, Typography, Fab, useTheme, useMediaQuery } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Typography, Fab, useTheme, useMediaQuery } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import CreateWorkoutModal from "components/CreateWorkoutModal";
+import WorkoutList from "components/WorkoutList";
+import { fetchWorkouts } from "api/workoutApi";
 
 interface Workout {
   id: number;
@@ -11,10 +13,10 @@ interface Workout {
 
 }
 
-interface HomeProps {
-  recentWorkouts: Workout[];
-  onCreateNewWorkout: () => void;
-}
+// interface HomeProps {
+//   recentWorkouts: Workout[];
+//   onCreateNewWorkout: () => void;
+// }
 
 const exercisesData = [
   { id: 1, name: 'Push Up' },
@@ -22,12 +24,26 @@ const exercisesData = [
   { id: 3, name: 'Pull Up' },
 ];
 
-export default function Home({ recentWorkouts, onCreateNewWorkout }: HomeProps) {
+export default function Home() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [ modalOpen, setModalOpen ] = useState(false);  
   const [ exercises, setExercises ] = useState(exercisesData);
+
+  const [ workouts, setWorkouts ]= useState<Workout[]>([]);
+
+  // calls for the workouts from api folder
+  useEffect(() => {
+    fetchWorkouts()
+      .then(setWorkouts)
+      .catch((err) => {
+        if (err.response) {
+          console.error("Response:", err.response.data);
+        }
+      });
+  }, []);
+  
 
   const handleCreateExercise = ( name: string ) => {
     const newExercise = {
@@ -61,28 +77,20 @@ export default function Home({ recentWorkouts, onCreateNewWorkout }: HomeProps) 
         Recent Workouts
       </Typography>
 
-      { recentWorkouts.length === 0 ? (
-        <Typography variant="body1" sx={ { mt: 2 } }>
-          No recent workouts.  Tap the + button to create your first workout
+      {workouts.length === 0 ? (
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          No recent workouts. Tap the + button to create your first workout
         </Typography>
       ) : (
-          <List>
-            {recentWorkouts.map(({ id, name, date, duration }) => (
-              <ListItem key={id} divider>
-                <ListItemText
-                  primary={name}
-                  secondary={`${new Date(date).toLocaleDateString()} • ${duration} min`}
-                />
-              </ListItem>
-          ))}
-          </List>
+        <WorkoutList workouts={workouts} />
       )}
+
 
       {/* Floating Action Button */}
       <Fab
         color="primary"
         aria-label= "Create new Workout"
-        onClick={()=> {setModalOpen(true); onCreateNewWorkout()}}
+        onClick={()=> {setModalOpen(true)}}
         disableRipple
         sx={ { 
           position: 'fixed',
